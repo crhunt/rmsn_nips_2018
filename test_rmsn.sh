@@ -8,7 +8,9 @@
 # - To run with hyperparameter optimisation, see the "EDIT ME!" sections at the top of each script it the seqeuence
 ############################################################################################################################
 
-RMSN_VERSION=compat
+source ~/anaconda3/etc/profile.d/conda.sh
+
+export RMSN_VERSION=compat
 echo RMSN_VERSION=$RMSN_VERSION
 
 echo Commencing R-MSN Training...

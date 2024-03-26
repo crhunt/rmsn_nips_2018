@@ -6,6 +6,7 @@ if 'RMSN_VERSION' not in os.environ:
     os.environ['RMSN_VERSION'] = 'v1'
 
 if "compat" == os.environ['RMSN_VERSION']:
+    logging.info("Using TensorFlow v2 in compatibility mode.")
     import tensorflow.compat.v1 as tf
     tf.disable_v2_behavior()
     from tensorflow.compat.v1.nn.rnn_cell import RNNCell, BasicLSTMCell
