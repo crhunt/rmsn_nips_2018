@@ -11,7 +11,7 @@ if "compat" == os.environ['RMSN_VERSION']:
     tf.disable_v2_behavior()
     from tensorflow.compat.v1.nn.rnn_cell import RNNCell, BasicLSTMCell
     from tensorflow.compat.v1.keras.initializers import glorot_normal as xavier_initializer
-    from tensorflow_probability.stats import percentile
+    from tensorflow_probability.python.stats import percentile
     from tensorflow.compat.v1.linalg import matmul
 else:
     if "v1" != os.environ['RMSN_VERSION']:
