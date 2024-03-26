@@ -6,7 +6,8 @@ Created on 21/3/2018 4:33 PM
 @author: limsi
 """
 
-import tensorflow as tf
+#import tensorflow as tf
+from tensorflow_compat import tf, RNNCell, BasicLSTMCell, xavier_initializer, percentile
 import numpy as np
 import pandas as pd
 
@@ -18,7 +19,7 @@ _ACTIVATION_MAP = {'sigmoid': tf.nn.sigmoid,
                    'linear': lambda x: x}
 
 
-class StateDumpingRNN(tf.contrib.rnn.RNNCell):
+class StateDumpingRNN(RNNCell):
     """ This RNNCell dumps out internal states for lstms"""
 
     def __init__(self, lstm):
@@ -42,7 +43,7 @@ class StateDumpingRNN(tf.contrib.rnn.RNNCell):
         return state, state
 
 
-class Seq2SeqDecoderCell(tf.contrib.rnn.RNNCell):
+class Seq2SeqDecoderCell(RNNCell):
     """ Decoder cell which allows for feedback, and external inputs during training """
     def __init__(self, lstm, W, b, b_training_mode=False):
 
@@ -131,7 +132,7 @@ class RnnModel:
 
 
         with tf.variable_scope(variable_scope_name):
-            self.rnn_cell = tf.contrib.rnn.BasicLSTMCell(self.hidden_layer_size,
+            self.rnn_cell = BasicLSTMCell(self.hidden_layer_size,
                                                          activation=_ACTIVATION_MAP[self.memory_activation_type],
                                                          state_is_tuple=False,
                                                          name=variable_scope_name
@@ -140,11 +141,11 @@ class RnnModel:
             self.output_w = tf.get_variable("Output_W",
                                             [self.hidden_layer_size, self.output_size],
                                             dtype=tf.float32,
-                                            initializer=tf.contrib.layers.xavier_initializer())
+                                            initializer=xavier_initializer())
             self.output_b = tf.get_variable("Output_b",
                                             [self.output_size],
                                             dtype=tf.float32,
-                                            initializer=tf.contrib.layers.xavier_initializer())
+                                            initializer=xavier_initializer())
 
         # Training params
         self.performance_metric = params['performance_metric']
@@ -195,29 +196,29 @@ class RnnModel:
                 self.memory_adapter_layer = {'W1': tf.get_variable("Adapter_Layer1_W",
                                                                    [self.encoder_state_size,  self.hidden_layer_size*2],
                                                                    dtype=tf.float32,
-                                                                   initializer=tf.contrib.layers.xavier_initializer()),
+                                                                   initializer=xavier_initializer()),
                                              'b1': tf.get_variable("Adapter_Layer1_b",
                                                                    [self.hidden_layer_size*2],
                                                                    dtype=tf.float32,
-                                                                   initializer=tf.contrib.layers.xavier_initializer()),
+                                                                   initializer=xavier_initializer()),
                                              }
             else:
                 self.memory_adapter_layer = {'W1': tf.get_variable("Adapter_Layer1_W",
                                                                    [self.encoder_state_size, self.memory_adapter_size],
                                                                    dtype=tf.float32,
-                                                                   initializer=tf.contrib.layers.xavier_initializer()),
+                                                                   initializer=xavier_initializer()),
                                              'b1': tf.get_variable("Adapter_Layer1_b",
                                                                    [self.memory_adapter_size],
                                                                    dtype=tf.float32,
-                                                                   initializer=tf.contrib.layers.xavier_initializer()),
+                                                                   initializer=xavier_initializer()),
                                              'W2': tf.get_variable("Adapter_Layer2_W",
                                                                    [self.memory_adapter_size, self.hidden_layer_size*2],
                                                                    dtype=tf.float32,
-                                                                   initializer=tf.contrib.layers.xavier_initializer()),
+                                                                   initializer=xavier_initializer()),
                                              'b2': tf.get_variable("Adapter_Layer2_b",
                                                                    [self.hidden_layer_size*2], # LSTM memory is double concated
                                                                    dtype=tf.float32,
-                                                                   initializer=tf.contrib.layers.xavier_initializer())
+                                                                   initializer=xavier_initializer())
                                              }
 
         # Use elu and linear to avoid placing any restrictions on the range of internal activations
@@ -368,8 +369,8 @@ class RnnModel:
         # Dumping output
         samples = tf.concat(outputs, axis=0)
         mean_estimate = tf.reduce_mean(samples, axis=0)
-        upper_bound = tf.contrib.distributions.percentile(samples, q=95.0, axis=0)
-        lower_bound = tf.contrib.distributions.percentile(samples, q=5.0, axis=0)
+        upper_bound = percentile(samples, q=95.0, axis=0)
+        lower_bound = percentile(samples, q=5.0, axis=0)
 
         # Averages across all samples - no difference for single sample
         ave_state = tf.reduce_mean(tf.concat(states_list, axis=0), axis=0)
