@@ -15,7 +15,8 @@ from libs.model_rnn import RnnModel
 import libs.net_helpers as helpers
 from simulation import cancer_simulation as sim
 
-import tensorflow as tf
+#import tensorflow as tf
+from tensorflow_compat import tf
 import pandas as pd
 import numpy as np
 import logging
