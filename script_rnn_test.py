@@ -16,7 +16,8 @@ import libs.net_helpers as helpers
 
 from sklearn.metrics import roc_auc_score, average_precision_score
 
-import tensorflow as tf
+#import tensorflow as tf
+from tensorflow_compat import tf
 import pandas as pd
 import numpy as np
 import logging

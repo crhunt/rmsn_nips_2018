@@ -17,7 +17,8 @@ import numpy as np
 import logging
 import os
 
-import tensorflow as tf
+#import tensorflow as tf
+from tensorflow_compat import tf
 
 import seaborn as sns
 sns.set()

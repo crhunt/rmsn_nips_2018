@@ -8,6 +8,11 @@
 # - To run with hyperparameter optimisation, see the "EDIT ME!" sections at the top of each script it the seqeuence
 ############################################################################################################################
 
+source ~/anaconda3/etc/profile.d/conda.sh
+
+export RMSN_VERSION=compat
+echo RMSN_VERSION=$RMSN_VERSION
+
 echo Commencing R-MSN Training...
 echo 1 - Fitting Propensity Networks
 python script_rnn_fit.py propensity_networks

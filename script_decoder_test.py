@@ -8,7 +8,8 @@ Created on 6/5/2018 11:22 AM
 
 import configs
 
-import tensorflow as tf
+#import tensorflow as tf
+from tensorflow_compat import tf
 import pandas as pd
 import numpy as np
 import logging
